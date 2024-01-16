@@ -6,7 +6,9 @@
     <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
     <link rel="stylesheet" type="text/css" href="../chapter-05/assets/css/app.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
 </head>
 <body>
 <div id="app">
@@ -25,31 +27,50 @@
         </div>
     </header>
     <main>
-        <div class="row">
-            <div v-if="showProduct">
-                <div class="col-md-2 col-md-offset-1">
-                    <figure>
-                        <img v-bind:src="product.image" alt="">
-                    </figure>
+        <div v-if="showProduct">
+            <div v-for="product in products">
+                <div class="row">
+                    <div class="col-md-5 col-md-offset-0">
+                        <figure>
+                            <img class="product" v-bind:src="product.image" alt="">
+                        </figure>
+                    </div>
+                    <div class="col-md-6 col-md-offset-0 description">
+                        <h1>{{ product.title }}</h1>
+                        <p v-html="product.description"></p>
+                        <p class="price">
+                            {{ product.price | formatPrice }}
+                        </p>
+                        <button class="btn btn-primary btn-lg"
+                                v-on:click="addToCart(product)"
+                                v-if="canAddToCart(product)">장바구니 담기
+                        </button>
+                        <button disabled="disabled"
+                                class="btn btn-primary btn-lg"
+                                v-else>장바구니 담기
+                        </button>
+                        <span class="inventory-message"
+                              v-if="product.availableInventory - cartCount(product.id) === 0">
+                            품절!
+                        </span>
+                        <span class="inventory-message"
+                              v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                        {{ product.availableInventory - cartCount(product.id) }} 남았습니다!
+                        </span>
+                        <span class="inventory-message"
+                              v-else>
+                            지금 구매하세요!
+                        </span>
+                        <div class="rating">
+                            <span v-bind:class="{'rating-active': checkRating(n, product)}" v-for="n in 5">☆</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 col-md-offset-2 description">
-                    <h1>{{ product.title }}</h1>
-                    <p v-html="product.description"></p>
-                    <p class="price">
-                        {{ product.price | formatPrice }}
-                    </p>
-                    <button class="btn btn-primary btn-lg"
-                            v-on:click="addToCart"
-                            v-if="canAddToCart">장바구니 담기
-                    </button>
-                    <button disabled="disabled"
-                            class="btn btn-primary btn-lg"
-                            v-else>장바구니 담기
-                    </button>
-
-                </div>
+                <hr/>
             </div>
-            <div v-else>
+        </div>
+        <div v-else>
+            <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="panel panel-info">
                         <div class="panel-heading">애완용품샵 체크아웃</div>
@@ -136,18 +157,17 @@
                                 </div>
                             </div>
                             <div class="col-md-12 verify">
-                    <pre>
-                        이름: {{ order.firstName }}
-                        성: {{ order.lastName }}
-                        주소: {{ order.address }}
-                        도시: {{ order.city }}
-                        우편번호: {{ order.zip }}
-                        주: {{ order.state }}
-                        배송지: {{ order.method }}
-                        선물: {{ order.gift }}
-                    </pre>
+                                <pre>
+                                    이름: {{ order.firstName }}
+                                    성: {{ order.lastName }}
+                                    주소: {{ order.address }}
+                                    도시: {{ order.city }}
+                                    우편번호: {{ order.zip }}
+                                    주: {{ order.state }}
+                                    배송지: {{ order.method }}
+                                    선물: {{ order.gift }}
+                                </pre>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -163,17 +183,7 @@
         el: '#app',
         data: {
             sitename: 'Vue.js 애완용품샵',
-            product: {
-                id: 1001,
-                title: '고양이 사료, 25파운드',
-                description: "당신의 고양이를 위한 <em>거부할 수 없는</em>, " +
-                    "유기농 25파운드 사료입니다.",
-                price: 2000,
-                image: "../chapter-05/assets/images/product-fullsize.png",
-                availableInventory: 10,
-            },
             showProduct: true,
-            cart: [],
             order: {
                 firstName: '',
                 lastName: '',
@@ -194,11 +204,16 @@
                 AR: '애리조나',
                 CA: '캘리포니아',
                 NV: '네바다',
-            }
+            },
+            cart: [],
+            products: [],
         },
         methods: {
-            addToCart: function () {
-                this.cart.push(this.product.id);
+            checkRating(n, myProduct) {
+                return myProduct.rating - n >= 0;
+            },
+            addToCart(aProduct) {
+                this.cart.push(aProduct.id);
             },
             showCheckout() {
                 this.showProduct = !this.showProduct;
@@ -206,14 +221,23 @@
             submitForm() {
                 alert('제출 완료');
             },
+            canAddToCart(aProduct) {
+                return aProduct.availableInventory > this.cartCount(aProduct.id);
+            },
+            cartCount(id) {
+                let count = 0;
+                for (let i = 0; i < this.cart.length; i++) {
+                    if (this.cart[i] === id) {
+                        count++;
+                    }
+                }
+                return count;
+            },
         },
         computed: {
             cartItemCount: function () {
                 return this.cart.length || '';
             },
-            canAddToCart: function () {
-                return this.product.availableInventory > this.cartItemCount;
-            }
         },
         filters: {
             formatPrice: function (price) {
@@ -243,6 +267,12 @@
             if (APP_LOG_LIFECYCLE_EVENTS) {
                 console.log("created");
             }
+
+            axios.get('./products.json')
+                .then((response) => {
+                    this.products = response.data.products;
+                    console.log(this.products);
+                });
         },
         beforeMount: function () {
             if (APP_LOG_LIFECYCLE_EVENTS) {
