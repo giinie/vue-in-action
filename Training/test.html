@@ -28,7 +28,7 @@
     </header>
     <main>
         <div v-if="showProduct">
-            <div v-for="product in products">
+            <div v-for="product in sortedProducts">
                 <div class="row">
                     <div class="col-md-5 col-md-offset-0">
                         <figure>
@@ -235,6 +235,21 @@
             },
         },
         computed: {
+            sortedProducts() {
+                if (this.products.length > 0) {
+                    let productsArray = this.products.slice(0);
+                    function compare(a, b) {
+                        if (a.title.toLowerCase() < b.title.toLowerCase()) {
+                            return -1;
+                        }
+                        if (a.title.toLowerCase() > b.title.toLowerCase()) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                    return productsArray.sort(compare);
+                }
+            },
             cartItemCount: function () {
                 return this.cart.length || '';
             },
