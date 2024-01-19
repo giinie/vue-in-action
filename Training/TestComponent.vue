@@ -1,19 +1,19 @@
 <template>
   <div class="hello">
+    <h1>Test Component</h1>
     {{ msg }}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'single-file-component',
+  name: 'TestComponent',
   data() {
     return {
-      msg: 'Vue.js 앱에 오신걸 환영합니다',
+      msg: 'Vue.js 앱에 오신 걸 환영합니다.',
     };
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped></style>

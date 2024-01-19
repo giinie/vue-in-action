@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <title>Title</title>
+  </head>
+  <body>
+    <div id="app">
+      {{ counter }}<br />
+      <button v-on:click="incrementCounter">카운터 증가</button>
+      <my-component v-on:increment-me="incrementCounter"></my-component>
+      <example-component></example-component>
+      <example-component></example-component>
+      <example-component></example-component>
+      <my-local-component
+        :num="myNumber"
+        :str="passedString"
+        :even="myNumber"
+        :obj="passedObject"
+      ></my-local-component>
+    </div>
+    <script>
+      Vue.component('my-component', {
+        template: `
+      <div>
+        <div>안녕, 전역 컴포넌트로부터</div>
+        <div>
+          <button v-on:click="childIncrementCounter">자식으로부터 증가</button>
+        </div>
+      </div>
+    `,
+        methods: {
+          childIncrementCounter() {
+            this.$emit('increment-me');
+          },
+        },
+      });
+      const Component = {
+        template: `
+      <div>숫자: {{ num }}<br>문자열: {{ str }}<br>짝수?: {{ even }}<br>객체: {{ obj.message }}
+      </div>`,
+        props: {
+          num: {
+            type: Number,
+            required: true,
+          },
+          str: {
+            type: String,
+            default: '안녕',
+          },
+          even: {
+            type: Number,
+            validator: value => {
+              return value % 2 === 0;
+            },
+          },
+          obj: {
+            type: Object,
+            default: () => {
+              return { message: '안녕, 객체로부터' };
+            },
+          },
+        },
+      };
+      const ExampleComponent = {
+        template:
+          '<div><button v-on:click="counter += 1"> {{counter}} </button></div>',
+        data() {
+          return {
+            counter: 0,
+          };
+        },
+      };
+      new Vue({
+        el: '#app',
+        components: {
+          'my-local-component': Component,
+          'example-component': ExampleComponent,
+        },
+        data() {
+          return {
+            passedString: '안녕, 부모로부터!',
+            myNumber: 44,
+            passedObject: {
+              message: '넘겨준 객체',
+            },
+            counter: 0,
+          };
+        },
+        methods: {
+          incrementCounter() {
+            this.counter++;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
