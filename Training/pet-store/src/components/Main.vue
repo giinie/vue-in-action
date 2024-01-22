@@ -139,7 +139,7 @@ export default {
     },
   },
   created() {
-    axios.get('products.json').then(response => {
+    axios.get('/products.json').then(response => {
       this.products = response.data.products;
       window.console.log(this.products);
     });

@@ -29,16 +29,16 @@ export default {
   components: { MyHeader },
   data() {
     return {
-      product: '',
+      product: {},
     };
   },
   created() {
-    axios.get('products.json').then(response => {
+    axios.get('/products.json').then(response => {
       // eslint-disable-next-line prefer-destructuring
       this.product = response.data.products.filter(
         data => data.id === this.$route.params.id,
       )[0];
-      this.product.image = `/${this.product.image}`;
+      // this.product.image = `/${this.product.image}`;
     });
   },
 };
