@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <title>Title</title>
+  </head>
+  <body>
+    <div id="app">
+      <book-component></book-component>
+    </div>
+    <script>
+      const BookComponent = function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+             <div>
+             <h1>
+             비동기 컴포넌트
+             </h1>
+             </div>
+             `,
+          });
+        }, 1000);
+      };
+
+      new Vue({
+        el: '#app',
+        components: { 'book-component': BookComponent },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,150 @@
+<template>
+  <div>
+    <my-header :cartItemCount="cartItemCount"></my-header>
+    <main>
+      <div v-for="product in sortedProducts" :key="product.id">
+        <div class="row">
+          <div class="col-md-5 col-md-offset-0">
+            <figure>
+              <img class="product" v-bind:src="product.image" alt="" />
+            </figure>
+          </div>
+          <div class="col-md-6 col-md-offset-0 description">
+            <router-link
+              tag="h1"
+              :to="{ name: 'Id', params: { id: product.id } }"
+            >
+              {{ product.title }}
+            </router-link>
+            <p v-html="product.description"></p>
+            <p class="price">{{ product.price | formatPrice }}</p>
+            <button
+              class="btn btn-primary btn-lg"
+              v-on:click="addToCart(product)"
+              v-if="canAddToCart(product)"
+            >
+              장바구니 담기
+            </button>
+            <button disabled="disabled" class="btn btn-primary btn-lg" v-else>
+              장바구니 담기
+            </button>
+            <span
+              class="inventory-message"
+              v-if="product.availableInventory - cartCount(product.id) === 0"
+            >
+              품절!
+            </span>
+            <span
+              class="inventory-message"
+              v-else-if="product.availableInventory - cartCount(product.id) < 5"
+            >
+              {{ product.availableInventory - cartCount(product.id) }}
+              남았습니다!
+            </span>
+            <span class="inventory-message" v-else> 지금 구매하세요! </span>
+            <div class="rating">
+              <span
+                :key="n"
+                v-bind:class="{ 'rating-active': checkRating(n, product) }"
+                v-for="n in 5"
+                >☆</span
+              >
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+    </main>
+  </div>
+</template>
+
+<script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import axios from 'axios';
+import MyHeader from './Header.vue';
+
+export default {
+  name: 'MyMain',
+  components: {
+    MyHeader,
+  },
+  data() {
+    return {
+      products: [],
+      cart: [],
+    };
+  },
+  methods: {
+    checkRating(n, product) {
+      return product.rating - n >= 0;
+    },
+    addToCart(product) {
+      this.cart.push(product.id);
+    },
+    canAddToCart(product) {
+      return product.availableInventory > this.cartCount(product.id);
+    },
+    cartCount(id) {
+      let count = 0;
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < this.cart.length; i++) {
+        if (this.cart[i] === id) {
+          // eslint-disable-next-line no-plusplus
+          count++;
+        }
+      }
+      return count;
+    },
+  },
+  computed: {
+    cartItemCount() {
+      return this.cart.length || '';
+    },
+    // eslint-disable-next-line consistent-return,vue/return-in-computed-property
+    sortedProducts() {
+      if (this.products.length > 0) {
+        const productsArray = this.products.slice(0);
+
+        // eslint-disable-next-line no-inner-declarations
+        function compare(a, b) {
+          if (a.title.toLowerCase() < b.title.toLowerCase()) {
+            return -1;
+          }
+          if (a.title.toLowerCase() > b.title.toLowerCase()) {
+            return 1;
+          }
+          return 0;
+        }
+
+        return productsArray.sort(compare);
+      }
+    },
+  },
+  filters: {
+    formatPrice(price) {
+      if (!parseInt(price, 10)) {
+        return '';
+      }
+      if (price > 99999) {
+        const priceString = (price / 100).toFixed(2);
+        const priceArray = priceString.split('').reverse();
+        let index = 3;
+        while (priceArray.length > index + 3) {
+          priceArray.splice(index + 3, 0, ',');
+          index += 4;
+        }
+        return `$${priceArray.reverse().join('')}`;
+      }
+      return `$${(price / 100).toFixed(2)}`;
+    },
+  },
+  created() {
+    axios.get('products.json').then(response => {
+      this.products = response.data.products;
+      window.console.log(this.products);
+    });
+  },
+};
+</script>
+
+<style scoped></style>
