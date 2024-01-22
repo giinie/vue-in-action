@@ -4,12 +4,25 @@
     <meta charset="UTF-8" />
     <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
     <title>Title</title>
+    <style>
+      .component-fade-enter-active,
+      .component-fade-leave-active {
+        transition: opacity 2s ease;
+      }
+
+      .component-fade-enter,
+      .component-fade-leave-to {
+        opacity: 0;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
       <button @click="cycle">순환하기</button>
       <h1>
-        <component :is="currentView"></component>
+        <transition name="component-fade" mode="out-in">
+          <component :is="currentView"></component>
+        </transition>
       </h1>
     </div>
     <script>

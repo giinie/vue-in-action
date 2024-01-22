@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <style>
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+    <title>Vue.js Transition Example</title>
+  </head>
+  <body>
+    <div id="app">
+      <div @click="show = !show">
+        <h2>{{ title }}</h2>
+      </div>
+      <transition
+        name="fade"
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @after-enter="afterEnter"
+        @enter-cancelled="enterCancelled"
+        @before-leave="beforeLeave"
+        @leave="leave"
+        @after-leave="afterLeave"
+        @leave-cancelled="leaveCancelled"
+        :css="false"
+      >
+        <div v-if="show">
+          <h1>{{ description }}</h1>
+        </div>
+      </transition>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            title: '전쟁 그리고 평화',
+            description: '설명 부분입니다.',
+            show: false,
+          };
+        },
+        methods: {
+          beforeEnter(el) {
+            console.log('beforeEnter');
+          },
+          enter(el, done) {
+            console.log('enter');
+            addEventListener(el, done);
+            el.style.animationName = 'bounceIn';
+            el.style.animationDuration = '1.5s';
+          },
+          afterEnter(el) {
+            console.log('afterEnter');
+          },
+          enterCancelled(el) {
+            console.log('enterCancelled');
+          },
+          beforeLeave(el) {
+            console.log('beforeLeave');
+          },
+          leave(el, done) {
+            console.log('leave');
+            addEventListener(el, done);
+            el.style.animationName = 'bounceIn';
+            el.style.animationDuration = '1.5s';
+            el.style.animationDirection = 'reverse';
+          },
+          afterLeave(el) {
+            console.log('afterLeave');
+          },
+          leaveCancelled(el) {
+            console.log('leaveCancelled');
+          },
+        },
+      });
+
+      function addEventListener(el, done) {
+        el.addEventListener('animationend', function () {
+          el.style = '';
+          done();
+        });
+      }
+    </script>
+  </body>
+</html>
