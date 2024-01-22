@@ -14,6 +14,8 @@
         <p class="price">
           {{ product.price }}
         </p>
+        <button @click="edit">상품 수정</button>
+        <router-view></router-view>
       </div>
     </div>
   </div>
@@ -31,6 +33,11 @@ export default {
     return {
       product: {},
     };
+  },
+  methods: {
+    edit() {
+      this.$router.push({ name: 'EditProduct' });
+    },
   },
   created() {
     axios.get('/products.json').then(response => {
