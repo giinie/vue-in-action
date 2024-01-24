@@ -68,7 +68,6 @@
 
 <script>
 // eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios';
 import MyHeader from './Header.vue';
 
 export default {
@@ -78,7 +77,6 @@ export default {
   },
   data() {
     return {
-      products: [],
       cart: [],
     };
   },
@@ -105,6 +103,9 @@ export default {
     },
   },
   computed: {
+    products() {
+      return this.$store.getters.products;
+    },
     cartItemCount() {
       return this.cart.length || '';
     },
@@ -147,10 +148,7 @@ export default {
     },
   },
   created() {
-    axios.get('/products.json').then(response => {
-      this.products = response.data.products;
-      window.console.log(this.products);
-    });
+    this.$store.dispatch('initStore');
   },
 };
 </script>
