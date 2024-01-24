@@ -8,11 +8,8 @@ require('./assets/app.css');
 
 Vue.config.productionTip = false;
 
-// eslint-disable-next-line no-new
 new Vue({
-  el: '#app',
   router,
   store,
-  template: '<App/>',
-  components: { App },
-});
+  render: h => h(App),
+}).$mount('#app');

@@ -67,7 +67,6 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-extraneous-dependencies
 import MyHeader from './Header.vue';
 
 export default {
