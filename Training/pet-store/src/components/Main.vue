@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import MyHeader from './Header.vue';
 
 export default {
@@ -80,6 +81,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['initStore']),
     checkRating(n, product) {
       return product.rating - n >= 0;
     },
@@ -102,9 +104,7 @@ export default {
     },
   },
   computed: {
-    products() {
-      return this.$store.getters.products;
-    },
+    ...mapGetters(['products']),
     cartItemCount() {
       return this.cart.length || '';
     },
@@ -147,7 +147,8 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('initStore');
+    // this.$store.dispatch('initStore');
+    this.initStore();
   },
 };
 </script>
