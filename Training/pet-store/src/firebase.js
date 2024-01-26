@@ -2,7 +2,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { initializeApp } from 'firebase/app';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { getAnalytics } from 'firebase/analytics';
+import 'firebase/firestore';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,9 +20,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// eslint-disable-next-line no-unused-vars
-const analytics = getAnalytics(app);
+export const firebaseApp = initializeApp(firebaseConfig);
 
-export const db = app.database();
-export const productsRef = db.ref('PetStore');
+export const db = firebaseApp.firestore();
+export const productsRef = db.collection('PetStore');

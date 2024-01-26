@@ -1,15 +1,14 @@
 import Vue from 'vue';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { firestorePlugin } from 'vuefire';
 import App from './App.vue';
 import router from './router';
 
 import { store } from './store/store';
-import './firebase';
-// eslint-disable-next-line import/no-extraneous-dependencies,import/order
-import { VueFire } from 'vuefire';
 
 require('./assets/app.css');
 
-Vue.use(VueFire);
+Vue.use(firestorePlugin);
 Vue.config.productionTip = false;
 
 new Vue({
