@@ -69,9 +69,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import MyHeader from './Header.vue';
+// eslint-disable-next-line import/extensions,import/no-unresolved
+import { productsRef } from '@/firebase';
 
 export default {
   name: 'MyMain',
+  firebase: {
+    docs: productsRef,
+  },
   components: {
     MyHeader,
   },
@@ -104,7 +109,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['products']),
+    ...mapGetters(['products', 'session']),
     cartItemCount() {
       return this.cart.length || '';
     },

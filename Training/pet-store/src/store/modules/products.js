@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const state = {
   products: [],
+  session: false,
 };
 
 const mutations = {
@@ -9,6 +10,11 @@ const mutations = {
   SET_STORE(state, products) {
     // eslint-disable-next-line no-param-reassign
     state.products = products;
+  },
+  // eslint-disable-next-line no-shadow
+  SET_SESSION(state, session) {
+    // eslint-disable-next-line no-param-reassign
+    state.session = session;
   },
 };
 
@@ -24,6 +30,8 @@ const actions = {
 const getters = {
   // eslint-disable-next-line no-shadow
   products: state => state.products,
+  // eslint-disable-next-line no-shadow
+  session: state => state.session,
 };
 
 export default {
