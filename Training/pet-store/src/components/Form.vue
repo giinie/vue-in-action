@@ -14,31 +14,47 @@
             <div class="form-group">
               <div class="col-md-6">
                 <strong>이름:</strong>
-                <input v-model.trim="order.firstName" class="form-control" />
+                <input
+                  id="firstName"
+                  v-model.trim="order.firstName"
+                  class="form-control"
+                />
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-6">
                 <strong>성:</strong>
-                <input v-model.trim="order.lastName" class="form-control" />
+                <input
+                  id="lastName"
+                  v-model.trim="order.lastName"
+                  class="form-control"
+                />
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-12"><strong>주소:</strong></div>
               <div class="col-md-12">
-                <input v-model.trim="order.address" class="form-control" />
+                <input
+                  id="address"
+                  v-model.trim="order.address"
+                  class="form-control"
+                />
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-12"><strong>도시:</strong></div>
               <div class="col-md-12">
-                <input v-model.trim="order.city" class="form-control" />
+                <input
+                  id="city"
+                  v-model.trim="order.city"
+                  class="form-control"
+                />
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-2">
                 <strong>State:</strong>
-                <select v-model="order.state" class="form-control">
+                <select id="state" v-model="order.state" class="form-control">
                   <option disabled value="">State</option>
                   <option
                     v-for="(state, key) in states"
@@ -54,6 +70,7 @@
               <div class="col-md-6 col-md-offset-4">
                 <strong>우편번호:</strong>
                 <input
+                  id="zip"
                   v-model.number="order.zip"
                   class="form-control"
                   type="number"
@@ -114,12 +131,21 @@
                       선물: {{ order.gift }}
                     </pre
               >
+              <div v-if="madeOrder">
+                <h4>주문이 완료되었습니다!</h4>
+              </div>
             </div>
+            <!-- end of col-md-12 verify -->
           </div>
+          <!-- end of panel-body -->
         </div>
+        <!-- end of panel panel-info -->
       </div>
+      <!-- end of col-md-10 col-md-offset-1 -->
     </div>
+    <!-- end of row -->
   </div>
+  <!-- end of container -->
 </template>
 
 <script>
@@ -154,12 +180,12 @@ export default {
         CA: '캘리포니아',
         NV: '네바다',
       },
+      madeOrder: false,
     };
   },
   methods: {
     submitForm() {
-      // eslint-disable-next-line no-alert
-      alert('제출 완료');
+      this.madeOrder = true;
     },
   },
 };
